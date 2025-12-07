@@ -1,57 +1,63 @@
-/* =======================
-   VARIABLES Y THEMING
-==========================*/
+/* =========================================================
+   BASE TIPOGRAFÍA / VARIABLES
+========================================================= */
 
 :root {
+  --font-main: "Poppins", system-ui, sans-serif;
+
+  --fs-xs: 0.75rem;
+  --fs-sm: 0.875rem;
+  --fs-base: 1rem;
+  --fs-md: 1.125rem;
+  --fs-lg: 1.25rem;
+  --fs-xl: 1.5rem;
+
+  --fw-normal: 400;
+  --fw-medium: 500;
+  --fw-semibold: 600;
+  --fw-bold: 700;
+
   --bg: #050816;
   --bg-soft: #0b1020;
   --card: #111827;
+
   --text-main: #f9fafb;
   --text-muted: #9ca3af;
+
   --border-subtle: #1f2937;
+  --shadow-soft: 0 18px 40px rgba(0,0,0,0.55);
 
   --accent-run: #33a1ff;
   --accent-strength: #ff5733;
   --accent-intervals: #9d33ff;
   --accent-long: #33ff57;
   --accent-recovery: #ffc300;
+
+  --accent-speed: var(--accent-intervals);
+  --accent-longrun: var(--accent-long);
 }
 
 .light {
   --bg: #f3f4f6;
-  --bg-soft: #fff;
+  --bg-soft: #ffffff;
   --card: #ffffff;
   --text-main: #111;
   --text-muted: #6b7280;
   --border-subtle: #e5e7eb;
-
-  --shadow-soft: 0 12px 25px rgba(0, 0, 0, 0.12);
+  --shadow-soft: 0 12px 25px rgba(0,0,0,0.12);
 }
 
-.dark {
-  --shadow-soft: 0 18px 40px rgba(0, 0, 0, 0.55);
-}
-
-/* =======================
-   BASE GENERAL
-==========================*/
+/* =========================================================
+   GLOBAL
+========================================================= */
 
 body {
-  font-family: "Inter", system-ui, sans-serif;
+  font-family: var(--font-main);
   background: var(--bg);
   color: var(--text-main);
   margin: 0;
   padding: 16px;
 }
-
-.app {
-  max-width: 1000px;
-  margin: auto;
-}
-
-/* =======================
-   HEADER
-==========================*/
 
 header {
   margin-bottom: 20px;
@@ -63,18 +69,6 @@ header {
   align-items: center;
 }
 
-h1 {
-  font-size: 1.4rem;
-  margin: 0;
-}
-
-.subtitle {
-  font-size: 0.85rem;
-  margin-top: 8px;
-  color: var(--text-muted);
-}
-
-/* BOTÓN MODO CLARO / OSCURO */
 .theme-toggle {
   border: none;
   background: var(--card);
@@ -86,9 +80,9 @@ h1 {
   box-shadow: var(--shadow-soft);
 }
 
-/* =======================
+/* =========================================================
    PROGRESO
-==========================*/
+========================================================= */
 
 .progress-card {
   margin-top: 14px;
@@ -102,21 +96,14 @@ h1 {
   gap: 14px;
 }
 
-.progress-label {
-  font-size: 0.9rem;
-  color: var(--text-muted);
-}
-
 .progress-bar {
-  position: relative;
   width: 100%;
   height: 10px;
-  border-radius: 30px;
   background: var(--bg-soft);
+  border-radius: 20px;
 }
 
 .progress-bar-fill {
-  position: absolute;
   height: 100%;
   width: 0%;
   border-radius: inherit;
@@ -124,29 +111,19 @@ h1 {
   transition: width 0.3s ease-out;
 }
 
-.new-week {
+#new-week {
   border: none;
   background: #466def;
   color: white;
-  padding: 10px;
-  border-radius: 12px;
+  padding: 10px 16px;
+  border-radius: 100px;
   cursor: pointer;
   font-size: 0.85rem;
 }
 
-/* =======================
-   WEEK GRID
-==========================*/
-
-.week-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-  gap: 16px;
-}
-
-/* =======================
-   DAY CARDS
-==========================*/
+/* =========================================================
+   CARDS
+========================================================= */
 
 .day-card {
   background: var(--card);
@@ -157,30 +134,31 @@ h1 {
   display: flex;
   flex-direction: column;
   gap: 12px;
+  transition: transform 0.32s ease, opacity 0.32s ease;
 }
 
 .day-name {
-  font-size: 0.9rem;
-  font-weight: 600;
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-semibold);
 }
 
 .day-title {
-  font-size: 0.85rem;
-  font-weight: 600;
-  margin-top: 2px;
+  font-size: var(--fs-md);
+  font-weight: var(--fw-medium);
 }
 
 .day-pill {
-  font-size: 0.75rem;
+  display: inline-block;
+  font-size: var(--fs-xs);
   padding: 4px 10px;
   border-radius: 999px;
-  background: var(--bg-soft);
   border: 1px solid var(--border-subtle);
+  background: var(--bg-soft);
 }
 
-/* =======================
+/* =========================================================
    BLOQUES
-==========================*/
+========================================================= */
 
 .block {
   padding: 10px;
@@ -190,7 +168,7 @@ h1 {
 }
 
 .block-label {
-  font-size: 0.7rem;
+  font-size: var(--fs-xs);
   text-transform: uppercase;
   color: var(--text-muted);
   margin-bottom: 4px;
@@ -198,12 +176,12 @@ h1 {
 
 .block p {
   margin: 0;
-  font-size: 0.8rem;
+  font-size: var(--fs-sm);
 }
 
-/* =======================
+/* =========================================================
    CHECKLIST
-==========================*/
+========================================================= */
 
 .checklist {
   display: flex;
@@ -213,8 +191,8 @@ h1 {
 
 .check-item {
   display: flex;
-  align-items: center;
   gap: 6px;
+  align-items: center;
 }
 
 .check-item input {
@@ -229,35 +207,102 @@ h1 {
 }
 
 .summary-chip {
-  font-size: 0.75rem;
-  background: rgba(34, 197, 94, 0.18);
+  font-size: var(--fs-xs);
+  background: rgba(34,197,94,0.18);
   padding: 4px 8px;
   border-radius: 12px;
-  margin-top: 6px;
 }
 
 .reset-day {
-  background: transparent;
   border: none;
+  background: transparent;
   color: #ef4444;
-  font-size: 0.75rem;
+  font-size: var(--fs-xs);
   text-decoration: underline;
   cursor: pointer;
 }
 
-/* =======================
-   RESPONSIVE
-==========================*/
+/* =========================================================
+   MOBILE — STACK TINDER
+========================================================= */
 
-@media (max-width: 480px) {
-  h1 {
-    font-size: 1.2rem;
+@media (max-width: 767px) {
+
+  #week-carousel {
+    position: relative;
+    width: 100%;
+    height: 75vh;
   }
-  .week-grid {
-    grid-template-columns: 1fr;
+
+  #week-carousel .day-card {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    width: 92%;
+    transform: translateX(-50%);
+    transition: transform 0.25s ease, opacity 0.25s ease;
+  }
+
+  .stack-top {
+    z-index: 30;
+    transform: translateX(-50%) translateY(0) scale(1);
+  }
+
+  .stack-2 {
+    z-index: 20;
+    transform: translateX(-50%) translateY(12px) scale(0.97);
+    opacity: 0.9;
+  }
+
+  .stack-3 {
+    z-index: 10;
+    transform: translateX(-50%) translateY(22px) scale(0.94);
+    opacity: 0.8;
   }
 }
 
-.block p strong {
-  color: var(--accent-run);
+/* =========================================================
+   DESKTOP — APPLE TV CAROUSEL
+========================================================= */
+
+@media (min-width: 768px) {
+
+  #week-carousel {
+    display: flex;
+    gap: 32px;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    padding: 2rem 8vw; /* CENTRADO correcto también en ultrawide */
+    -webkit-overflow-scrolling: touch;
+  }
+
+  #week-carousel::-webkit-scrollbar {
+    display: none;
+  }
+
+  #week-carousel .day-card {
+    flex: 0 0 360px;
+    scroll-snap-align: center;
+    opacity: 0.5;
+    filter: blur(2px);
+    transform: scale(0.84) rotateY(0deg);
+    transition: transform 0.3s ease, opacity 0.3s ease;
+  }
+
+  #week-carousel .day-card.active {
+    opacity: 1;
+    filter: none;
+    transform: scale(1);
+    box-shadow: 0 8px 32px rgba(0,0,0,0.25);
+  }
+
+  #week-carousel .day-card.left {
+    transform: scale(0.84) rotateY(18deg);
+    opacity: 0.45;
+  }
+
+  #week-carousel .day-card.right {
+    transform: scale(0.84) rotateY(-18deg);
+    opacity: 0.45;
+  }
 }
