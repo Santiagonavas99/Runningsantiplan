@@ -1,0 +1,141 @@
+[
+  {
+    "id": "monday",
+    "name": "Lunes",
+    "type": "Fuerza",
+    "color": "var(--accent-strength)",
+    "title": "Fuerza + Parkour suave",
+    "workout": "Sentadillas 3x12 · Zancadas 3x10 · Peso muerto 1 pierna 3x10 · Gemelos 3x15",
+    "action": "Mini circuito parkour de 30 s",
+    "pre": {
+      "comida": "Avena rápida (4 cdas) + fruta",
+      "hidratacion": "200 ml de agua",
+      "tiempo": "20-30 min antes"
+    },
+    "checklist": [
+      "Calentamiento 5-7 min",
+      "Bloque de fuerza completado",
+      "Mini circuito parkour",
+      "Estiramientos 3-5 min"
+    ]
+  },
+  {
+    "id": "tuesday",
+    "name": "Martes",
+    "type": "Running Z2",
+    "color": "var(--accent-run)",
+    "title": "Rodaje Z2 + Exploración",
+    "workout": "5-7 km en Z2 (5:40-6:20/km)",
+    "action": "Explora una calle nueva",
+    "pre": {
+      "comida": "Banano + yogurt o tostada con mantequilla de maní",
+      "hidratacion": "250 ml de agua",
+      "tiempo": "20-30 min antes"
+    },
+    "checklist": [
+      "Calentamiento",
+      "Rodaje Z2",
+      "Exploración de calle nueva",
+      "Enfriamiento"
+    ]
+  },
+  {
+    "id": "wednesday",
+    "name": "Miércoles",
+    "type": "Fuerza",
+    "color": "var(--accent-strength)",
+    "title": "Fuerza superior + Core",
+    "workout": "Flexiones 3x12 · Remo 3x10 · Fondos 3x10 · Hollow hold 3x20s",
+    "action": "10-15 s de suspensión isométrica",
+    "pre": {
+      "comida": "Avena + manzana o yogurt griego",
+      "hidratacion": "200 ml de agua",
+      "tiempo": "20-30 min antes"
+    },
+    "checklist": [
+      "Calentamiento 5-7 min",
+      "Bloque de fuerza",
+      "Suspensión isométrica",
+      "Estiramientos"
+    ]
+  },
+  {
+    "id": "thursday",
+    "name": "Jueves",
+    "type": "Intervalos",
+    "color": "var(--accent-speed)",
+    "title": "Intervalos + Aceleraciones",
+    "workout": "6-8 repeticiones (1 min rápido Z4/Z5 + 1 min suave)",
+    "action": "Micro-sprints sorpresa",
+    "pre": {
+      "comida": "1 cucharada de miel o 1 gel pequeño",
+      "hidratacion": "300 ml de agua o isotónico",
+      "tiempo": "15-25 min antes"
+    },
+    "checklist": [
+      "Calentamiento",
+      "Intervalos",
+      "Sprints",
+      "Enfriamiento"
+    ]
+  },
+  {
+    "id": "friday",
+    "name": "Viernes",
+    "type": "Fuerza",
+    "color": "var(--accent-strength)",
+    "title": "Fuerza mixta",
+    "workout": "Sentadilla búlgara 3x10 · Puente glúteo 3x15 · Step-ups 3x10 · Bird-dogs 3x15",
+    "action": "Ejercicio de equilibrio en una línea",
+    "pre": {
+      "comida": "Banano + puñado de nueces",
+      "hidratacion": "200 ml de agua",
+      "tiempo": "20-30 min antes"
+    },
+    "checklist": [
+      "Calentamiento",
+      "Bloque de fuerza",
+      "Equilibrio",
+      "Estiramientos"
+    ]
+  },
+  {
+    "id": "saturday",
+    "name": "Sábado",
+    "type": "Rodaje Largo",
+    "color": "var(--accent-longrun)",
+    "title": "Rodaje Largo + Punto Épico",
+    "workout": "6-8 km Z2, aumentando 1 km cada dos semanas",
+    "action": "Foto épica en punto del recorrido",
+    "pre": {
+      "comida": "Banano + tostada con mantequilla de maní",
+      "hidratacion": "300 ml de agua",
+      "tiempo": "25-35 min antes"
+    },
+    "checklist": [
+      "Calentamiento",
+      "Rodaje largo",
+      "Foto del punto épico",
+      "Enfriamiento"
+    ]
+  },
+  {
+    "id": "sunday",
+    "name": "Domingo",
+    "type": "Recuperación",
+    "color": "var(--accent-recovery)",
+    "title": "Caminata + Mini aventura",
+    "workout": "20-30 min caminata o 2-3 km suaves",
+    "action": "Descubre un lugar nuevo",
+    "pre": {
+      "comida": "Fruta suave (manzana o banano)",
+      "hidratacion": "150-200 ml de agua",
+      "tiempo": "15 min antes"
+    },
+    "checklist": [
+      "Caminata o trote suave",
+      "Explorar lugar nuevo",
+      "Movilidad suave"
+    ]
+  }
+]

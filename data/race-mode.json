@@ -1,0 +1,33 @@
+{
+  "title": "Modo Carrera – Preparación para 30K",
+  "pre_race": {
+    "comida": "Avena + banano + miel (2 h antes) • 1 tostada con mantequilla de maní (1 h antes)",
+    "hidratacion": "500–700 ml de agua + 250 ml electrolitos",
+    "suplementos": "1 gel 10–15 min antes (opcional)"
+  },
+  "strategy": {
+    "ritmos": {
+      "z2": "5:40–6:20",
+      "z3": "4:55–5:30",
+      "z4": "4:35–4:55",
+      "z5": "4:18–4:35"
+    },
+    "carrera": "Mantén Z2 las primeras 2/3 partes, progresión a Z3 suave al final si te sientes bien."
+  },
+  "hydration_plan": [
+    "Cada 20 min → 3–4 sorbos de agua",
+    "Cada 45–60 min → Electrolitos",
+    "Cada 45–50 min → 1 gel (si aplica)"
+  ],
+  "race_checklist": [
+    "Dormir 7–9h",
+    "Lubricación anti-rozaduras",
+    "Cargar reloj / música",
+    "Amarrar cordones doble nudo",
+    "Ir al baño antes de salir",
+    "Llevar botella o cinturón",
+    "Calentar 8–10 min",
+    "Controlar respiración",
+    "No salir rápido"
+  ]
+}

@@ -1,0 +1,263 @@
+/* =======================
+   VARIABLES Y THEMING
+==========================*/
+
+:root {
+  --bg: #050816;
+  --bg-soft: #0b1020;
+  --card: #111827;
+  --text-main: #f9fafb;
+  --text-muted: #9ca3af;
+  --border-subtle: #1f2937;
+
+  --accent-run: #33a1ff;
+  --accent-strength: #ff5733;
+  --accent-intervals: #9d33ff;
+  --accent-long: #33ff57;
+  --accent-recovery: #ffc300;
+}
+
+.light {
+  --bg: #f3f4f6;
+  --bg-soft: #fff;
+  --card: #ffffff;
+  --text-main: #111;
+  --text-muted: #6b7280;
+  --border-subtle: #e5e7eb;
+
+  --shadow-soft: 0 12px 25px rgba(0, 0, 0, 0.12);
+}
+
+.dark {
+  --shadow-soft: 0 18px 40px rgba(0, 0, 0, 0.55);
+}
+
+/* =======================
+   BASE GENERAL
+==========================*/
+
+body {
+  font-family: "Inter", system-ui, sans-serif;
+  background: var(--bg);
+  color: var(--text-main);
+  margin: 0;
+  padding: 16px;
+}
+
+.app {
+  max-width: 1000px;
+  margin: auto;
+}
+
+/* =======================
+   HEADER
+==========================*/
+
+header {
+  margin-bottom: 20px;
+}
+
+.top-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+h1 {
+  font-size: 1.4rem;
+  margin: 0;
+}
+
+.subtitle {
+  font-size: 0.85rem;
+  margin-top: 8px;
+  color: var(--text-muted);
+}
+
+/* BOTÓN MODO CLARO / OSCURO */
+.theme-toggle {
+  border: none;
+  background: var(--card);
+  padding: 8px 12px;
+  border-radius: 12px;
+  cursor: pointer;
+  color: var(--text-main);
+  font-size: 1.1rem;
+  box-shadow: var(--shadow-soft);
+}
+
+/* =======================
+   PROGRESO
+==========================*/
+
+.progress-card {
+  margin-top: 14px;
+  background: var(--card);
+  padding: 16px;
+  border-radius: 14px;
+  border: 1px solid var(--border-subtle);
+  box-shadow: var(--shadow-soft);
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.progress-label {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+}
+
+.progress-bar {
+  position: relative;
+  width: 100%;
+  height: 10px;
+  border-radius: 30px;
+  background: var(--bg-soft);
+}
+
+.progress-bar-fill {
+  position: absolute;
+  height: 100%;
+  width: 0%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, #22c55e, #a855f7, #38bdf8);
+  transition: width 0.3s ease-out;
+}
+
+.new-week {
+  border: none;
+  background: #466def;
+  color: white;
+  padding: 10px;
+  border-radius: 12px;
+  cursor: pointer;
+  font-size: 0.85rem;
+}
+
+/* =======================
+   WEEK GRID
+==========================*/
+
+.week-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 16px;
+}
+
+/* =======================
+   DAY CARDS
+==========================*/
+
+.day-card {
+  background: var(--card);
+  padding: 16px;
+  border-radius: 14px;
+  border: 1px solid var(--border-subtle);
+  box-shadow: var(--shadow-soft);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.day-name {
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.day-title {
+  font-size: 0.85rem;
+  font-weight: 600;
+  margin-top: 2px;
+}
+
+.day-pill {
+  font-size: 0.75rem;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: var(--bg-soft);
+  border: 1px solid var(--border-subtle);
+}
+
+/* =======================
+   BLOQUES
+==========================*/
+
+.block {
+  padding: 10px;
+  border-radius: 12px;
+  background: var(--bg-soft);
+  border: 1px solid var(--border-subtle);
+}
+
+.block-label {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 4px;
+}
+
+.block p {
+  margin: 0;
+  font-size: 0.8rem;
+}
+
+/* =======================
+   CHECKLIST
+==========================*/
+
+.checklist {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.check-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.check-item input {
+  width: 16px;
+  height: 16px;
+  accent-color: #22c55e;
+}
+
+.check-item.done span {
+  text-decoration: line-through;
+  color: #6ee7b7;
+}
+
+.summary-chip {
+  font-size: 0.75rem;
+  background: rgba(34, 197, 94, 0.18);
+  padding: 4px 8px;
+  border-radius: 12px;
+  margin-top: 6px;
+}
+
+.reset-day {
+  background: transparent;
+  border: none;
+  color: #ef4444;
+  font-size: 0.75rem;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+/* =======================
+   RESPONSIVE
+==========================*/
+
+@media (max-width: 480px) {
+  h1 {
+    font-size: 1.2rem;
+  }
+  .week-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.block p strong {
+  color: var(--accent-run);
+}

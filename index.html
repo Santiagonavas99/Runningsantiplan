@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Plan Running + Fuerza + Retos</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+  <div class="app">
+
+    <!-- HEADER -->
+    <header>
+      <div class="top-row">
+        <h1>Plan Running + Fuerza + Acción</h1>
+
+        <!-- Modo oscuro / claro -->
+        <button id="theme-toggle" class="theme-toggle">
+          🌓
+        </button>
+      </div>
+
+      <p class="subtitle">
+        Marca los bloques diarios. Todo se guarda automáticamente.
+      </p>
+
+      <!-- Progress card -->
+      <div class="progress-card">
+        <div class="progress-label">
+          Progreso semanal:
+          <strong><span id="progress-text">0 / 14 bloques</span></strong>
+        </div>
+        <div id="rewards" class="rewards-box">
+        </div>
+        <div class="progress-bar">
+          <div class="progress-bar-fill" id="progress-bar-fill"></div>
+        </div>
+        <button id="new-week" class="new-week">Nueva semana</button>
+      </div>
+    </header>
+
+    <!-- WEEK GRID -->
+    <main>
+      <section class="week-grid" id="week-grid">
+        <!-- Se llena con JS -->
+      </section>
+    </main>
+  </div>
+
+  <script type="module" src="app.js"></script>
+</body>
+</html>
