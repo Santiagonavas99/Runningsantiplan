@@ -1,5 +1,5 @@
 /* ======================================
-   IMPORTS (rewards + recomendaciones)
+   IMPORTS
 =======================================*/
 import { calculateRewards } from "./components/rewards.js";
 import { getRealLifeTip } from "./components/recommendations.js";
@@ -11,38 +11,29 @@ const STORAGE_KEY = "running_fuerza_checklist_v2";
 const THEME_KEY = "theme_mode";
 
 /* ======================================
-   GLOBAL DATA
+   GLOBAL
 =======================================*/
 let trainingPlan = [];
-let raceMode = null;
 
 /* ======================================
-   LOAD JSON DATA
+   LOAD DATA
 =======================================*/
 async function loadData() {
-  try {
-    const planRes = await fetch("./data/training-plan.json");
-    trainingPlan = await planRes.json();
+  const planRes = await fetch("./data/training-plan.json");
+  trainingPlan = await planRes.json();
 
-    const raceRes = await fetch("./data/race-mode.json");
-    raceMode = await raceRes.json();
-
-    renderPlan();
-    showRewards();
-    renderRealLifeTip();
-  } catch (err) {
-    console.error("Error cargando JSON:", err);
-  }
+  renderPlan();
+  showRewards();
+  renderRealLifeTip();
 }
 
 /* ======================================
-   THEME MODE
+   THEME
 =======================================*/
 function loadTheme() {
   const saved = localStorage.getItem(THEME_KEY);
   const isDark = saved !== "light";
   document.body.classList.toggle("dark", isDark);
-  document.body.classList.toggle("light", !isDark);
 }
 
 function toggleTheme() {
@@ -52,7 +43,7 @@ function toggleTheme() {
 }
 
 /* ======================================
-   CHECKLIST STATE
+   STATE
 =======================================*/
 function loadState() {
   return JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}");
@@ -72,65 +63,40 @@ function resetWeek() {
 =======================================*/
 function showRewards() {
   const rewardsBox = document.getElementById("rewards");
-  if (!rewardsBox) return;
+  const rewards = calculateRewards(getWeeklyProgress());
 
-  const progress = getWeeklyProgress();
-  const rewards = calculateRewards(progress);
-
-  rewardsBox.innerHTML = rewards
-    .map((r) => `<div class="reward">${r}</div>`)
-    .join("");
+  rewardsBox.innerHTML = rewards.map(r => `<div>${r}</div>`).join("");
 }
 
 function getWeeklyProgress() {
   const state = loadState();
-  let daysCompleted = 0;
-  let longRunDone = false;
-  let strengthDays = 0;
-  let runDays = 0;
+  let completed = 0;
 
-  trainingPlan.forEach((day) => {
-    const st = state[day.id];
-
-    const dayFullyDone =
-      st && st.completed && st.completed.length === day.checklist.length;
-
-    if (dayFullyDone) daysCompleted++;
-    if (day.type.includes("Largo") && dayFullyDone) longRunDone = true;
-    if (day.type.includes("Fuerza")) strengthDays++;
-    if (day.type.includes("Z2") || day.type.includes("Intervalos")) runDays++;
+  trainingPlan.forEach(day => {
+    const st = state[day.id]?.completed || [];
+    if (st.length === day.checklist.length) completed++;
   });
 
-  return { daysCompleted, longRunDone, strengthDays, runDays };
+  return { completed };
 }
 
 /* ======================================
-   REAL LIFE TIP
-=======================================*/
-function renderRealLifeTip() {
-  const el = document.getElementById("real-life-tip");
-  if (!el) return;
-  el.textContent = getRealLifeTip();
-}
-
-/* ======================================
-   RENDER PLAN
+   RENDER
 =======================================*/
 function renderPlan() {
   const container = document.getElementById("week-carousel");
-  if (!container) return;
-
   container.innerHTML = "";
 
   const state = loadState();
-  let totalTasks = 0;
-  let completedTasks = 0;
 
-  trainingPlan.forEach((day) => {
+  let total = 0;
+  let done = 0;
+
+  trainingPlan.forEach(day => {
     const dayState = state[day.id] || { completed: [] };
-
     const card = document.createElement("article");
     card.className = "day-card";
+
     card.innerHTML = `
       <div class="day-name">${day.name}</div>
       <div class="day-title">${day.title}</div>
@@ -160,17 +126,16 @@ function renderPlan() {
     checklistWrap.className = "checklist";
 
     day.checklist.forEach((t, i) => {
-      totalTasks++;
-      const done = !!dayState.completed[i];
-      if (done) completedTasks++;
+      total++;
+      const checked = !!dayState.completed[i];
+      if (checked) done++;
 
       const item = document.createElement("label");
-      item.className = `check-item ${done ? "done" : ""}`;
+      item.className = `check-item ${checked ? "done" : ""}`;
       item.innerHTML = `
-        <input type="checkbox" data-day="${day.id}" data-index="${i}" ${done ? "checked" : ""}>
+        <input type="checkbox" data-day="${day.id}" data-index="${i}" ${checked ? "checked" : ""}>
         <span>${t}</span>
       `;
-
       checklistWrap.appendChild(item);
     });
 
@@ -178,13 +143,12 @@ function renderPlan() {
 
     const summary = document.createElement("div");
     summary.className = "summary-chip";
-    summary.textContent =
-      `${(dayState.completed || []).filter(Boolean).length} / ${day.checklist.length} completados`;
+    summary.textContent = `${dayState.completed.filter(Boolean).length} / ${day.checklist.length} completados`;
 
     const resetBtn = document.createElement("button");
     resetBtn.className = "reset-day";
-    resetBtn.textContent = "Reiniciar día";
     resetBtn.dataset.day = day.id;
+    resetBtn.textContent = "Reiniciar día";
 
     const footer = document.createElement("div");
     footer.appendChild(summary);
@@ -194,51 +158,48 @@ function renderPlan() {
     container.appendChild(card);
   });
 
-  updateProgress(totalTasks, completedTasks);
+  updateProgress(total, done);
 
-  // Activar slider con flechas
-  activateArrowSlider();
+  enableSwipe();
 }
 
 /* ======================================
-   SIMPLE SLIDER CON FLECHAS
+   SWIPE
 =======================================*/
-function activateArrowSlider() {
+function enableSwipe() {
   const container = document.getElementById("week-carousel");
-  const cards = Array.from(container.querySelectorAll(".day-card"));
-  if (!cards.length) return;
 
-  let index = 0;
+  let startX = 0;
 
-  function goTo(i) {
-    index = Math.max(0, Math.min(i, cards.length - 1));
-    cards[index].scrollIntoView({
-      behavior: "smooth",
-      inline: "center"
-    });
-  }
+  container.addEventListener("touchstart", e => {
+    startX = e.touches[0].clientX;
+  });
 
-  document.getElementById("prev-btn").onclick = () => goTo(index - 1);
-  document.getElementById("next-btn").onclick = () => goTo(index + 1);
+  container.addEventListener("touchend", e => {
+    const delta = e.changedTouches[0].clientX - startX;
 
-  goTo(0);
+    if (Math.abs(delta) > 50) {
+      if (delta < 0) container.scrollBy({ left: 350, behavior: "smooth" });
+      else container.scrollBy({ left: -350, behavior: "smooth" });
+    }
+  });
 }
 
 /* ======================================
    PROGRESS
 =======================================*/
 function updateProgress(total, completed) {
-  const pct = total === 0 ? 0 : Math.round((completed / total) * 100);
-  const bar = document.getElementById("progress-bar-fill");
-  const text = document.getElementById("progress-text");
-  if (bar) bar.style.width = pct + "%";
-  if (text) text.textContent = `${completed} / ${total} bloques`;
+  const pct = total ? Math.round(completed / total * 100) : 0;
+  document.getElementById("progress-bar-fill").style.width = pct + "%";
+  document.getElementById("progress-text").textContent = `${completed} / ${total} bloques`;
 }
 
 /* ======================================
-   EVENT LISTENERS
+   EVENTS
 =======================================*/
-document.addEventListener("click", (e) => {
+document.addEventListener("click", e => {
+
+  // Check
   if (e.target.matches("input[type='checkbox']")) {
     const id = e.target.dataset.day;
     const idx = Number(e.target.dataset.index);
@@ -251,6 +212,7 @@ document.addEventListener("click", (e) => {
     renderPlan();
   }
 
+  // Reset day
   if (e.target.matches(".reset-day")) {
     const id = e.target.dataset.day;
     const state = loadState();
@@ -260,7 +222,6 @@ document.addEventListener("click", (e) => {
   }
 
   if (e.target.matches("#new-week")) resetWeek();
-
   if (e.target.matches("#theme-toggle")) toggleTheme();
 });
 
@@ -269,3 +230,8 @@ document.addEventListener("click", (e) => {
 =======================================*/
 loadTheme();
 loadData();
+
+/* Deshabilitar pinch-to-zoom */
+document.addEventListener("touchstart", e => {
+  if (e.touches.length > 1) e.preventDefault();
+}, { passive: false });
