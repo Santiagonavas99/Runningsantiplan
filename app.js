@@ -11,13 +11,13 @@ const STORAGE_KEY = "running_fuerza_checklist_v2";
 const THEME_KEY = "theme_mode";
 
 /* ======================================
-   GLOBAL DATA HOLDERS
+   GLOBAL DATA
 =======================================*/
 let trainingPlan = [];
 let raceMode = null;
 
 /* ======================================
-   LOAD DATA (JSON EXTERNAL)
+   LOAD JSON DATA
 =======================================*/
 async function loadData() {
   try {
@@ -36,7 +36,7 @@ async function loadData() {
 }
 
 /* ======================================
-   THEME MODE (CLARO / OSCURO)
+   THEME MODE
 =======================================*/
 function loadTheme() {
   const saved = localStorage.getItem(THEME_KEY);
@@ -52,7 +52,7 @@ function toggleTheme() {
 }
 
 /* ======================================
-   CHECKLIST STATE MANAGEMENT
+   CHECKLIST STATE
 =======================================*/
 function loadState() {
   return JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}");
@@ -68,7 +68,7 @@ function resetWeek() {
 }
 
 /* ======================================
-   RECOMPENSAS (Gamificación)
+   REWARDS
 =======================================*/
 function showRewards() {
   const rewardsBox = document.getElementById("rewards");
@@ -82,7 +82,6 @@ function showRewards() {
     .join("");
 }
 
-/* Calcula progresos para las recompensas */
 function getWeeklyProgress() {
   const state = loadState();
   let daysCompleted = 0;
@@ -96,27 +95,17 @@ function getWeeklyProgress() {
     const dayFullyDone =
       st && st.completed && st.completed.length === day.checklist.length;
 
-    if (dayFullyDone) {
-      daysCompleted++;
-    }
-
-    if (day.type.includes("Largo") && dayFullyDone) {
-      longRunDone = true;
-    }
+    if (dayFullyDone) daysCompleted++;
+    if (day.type.includes("Largo") && dayFullyDone) longRunDone = true;
     if (day.type.includes("Fuerza")) strengthDays++;
     if (day.type.includes("Z2") || day.type.includes("Intervalos")) runDays++;
   });
 
-  return {
-    daysCompleted,
-    longRunDone,
-    strengthDays,
-    runDays,
-  };
+  return { daysCompleted, longRunDone, strengthDays, runDays };
 }
 
 /* ======================================
-   RENDER TIP (Vida real)
+   REAL LIFE TIP
 =======================================*/
 function renderRealLifeTip() {
   const el = document.getElementById("real-life-tip");
@@ -125,7 +114,7 @@ function renderRealLifeTip() {
 }
 
 /* ======================================
-   RENDER WEEK PLAN
+   RENDER PLAN
 =======================================*/
 function renderPlan() {
   const container = document.getElementById("week-carousel");
@@ -145,26 +134,27 @@ function renderPlan() {
     card.innerHTML = `
       <div class="day-name">${day.name}</div>
       <div class="day-title">${day.title}</div>
-      <span class="day-pill" style="border-color:${day.color}; color:${day.color}">${day.type}</span>
+      <span class="day-pill" style="border-color:${day.color}; color:${day.color}">
+        ${day.type}
+      </span>
+
       <div class="block">
         <div class="block-label">Entrenamiento</div>
         <p>${day.workout}</p>
       </div>
+
       <div class="block">
         <div class="block-label">Reto</div>
         <p>${day.action}</p>
       </div>
-    `;
 
-    const preBlock = document.createElement("div");
-    preBlock.className = "block";
-    preBlock.innerHTML = `
-      <div class="block-label">Pre-entreno</div>
-      <p><strong>Comida:</strong> ${day.pre.comida}</p>
-      <p><strong>Hidratación:</strong> ${day.pre.hidratacion}</p>
-      <p><strong>Tiempo:</strong> ${day.pre.tiempo}</p>
+      <div class="block">
+        <div class="block-label">Pre-entreno</div>
+        <p><strong>Comida:</strong> ${day.pre.comida}</p>
+        <p><strong>Hidratación:</strong> ${day.pre.hidratacion}</p>
+        <p><strong>Tiempo:</strong> ${day.pre.tiempo}</p>
+      </div>
     `;
-    card.appendChild(preBlock);
 
     const checklistWrap = document.createElement("div");
     checklistWrap.className = "checklist";
@@ -180,6 +170,7 @@ function renderPlan() {
         <input type="checkbox" data-day="${day.id}" data-index="${i}" ${done ? "checked" : ""}>
         <span>${t}</span>
       `;
+
       checklistWrap.appendChild(item);
     });
 
@@ -187,7 +178,8 @@ function renderPlan() {
 
     const summary = document.createElement("div");
     summary.className = "summary-chip";
-    summary.textContent = `${(dayState.completed || []).filter(Boolean).length}/${day.checklist.length} completados`;
+    summary.textContent =
+      `${(dayState.completed || []).filter(Boolean).length} / ${day.checklist.length} completados`;
 
     const resetBtn = document.createElement("button");
     resetBtn.className = "reset-day";
@@ -204,224 +196,36 @@ function renderPlan() {
 
   updateProgress(totalTasks, completedTasks);
 
-  if (window.innerWidth >= 768) {
-    activateDesktopCarousel();
-  } else {
-    activateMobileSwipe();
-  }
+  // Activar slider con flechas
+  activateArrowSlider();
 }
 
-/* =======================
-   Apple TV Desktop Carousel
-=======================*/
-function activateDesktopCarousel() {
+/* ======================================
+   SIMPLE SLIDER CON FLECHAS
+=======================================*/
+function activateArrowSlider() {
   const container = document.getElementById("week-carousel");
   const cards = Array.from(container.querySelectorAll(".day-card"));
   if (!cards.length) return;
 
-  function applyActiveClasses(activeIdx) {
-    cards.forEach((card, i) => {
-      card.classList.remove("active", "left", "right");
-      if (i === activeIdx) card.classList.add("active");
-      else if (i < activeIdx) card.classList.add("left");
-      else if (i > activeIdx) card.classList.add("right");
+  let index = 0;
+
+  function goTo(i) {
+    index = Math.max(0, Math.min(i, cards.length - 1));
+    cards[index].scrollIntoView({
+      behavior: "smooth",
+      inline: "center"
     });
   }
 
-  function updateActiveCard() {
-    const containerRect = container.getBoundingClientRect();
-    const containerCenter = containerRect.left + containerRect.width / 2;
+  document.getElementById("prev-btn").onclick = () => goTo(index - 1);
+  document.getElementById("next-btn").onclick = () => goTo(index + 1);
 
-    let minDist = Infinity;
-    let activeIdx = 0;
-
-    cards.forEach((card, i) => {
-      const rect = card.getBoundingClientRect();
-      const cardCenter = rect.left + rect.width / 2;
-      const dist = Math.abs(cardCenter - containerCenter);
-      if (dist < minDist) {
-        minDist = dist;
-        activeIdx = i;
-      }
-    });
-
-    applyActiveClasses(activeIdx);
-  }
-
-  // Al inicio calculamos según posición actual
-  updateActiveCard();
-
-  // Limpiamos handlers anteriores
-  if (container._carouselScrollHandler) {
-    container.removeEventListener("scroll", container._carouselScrollHandler);
-  }
-  container._carouselScrollHandler = updateActiveCard;
-  container.addEventListener("scroll", updateActiveCard);
-
-  if (container._carouselResizeHandler) {
-    window.removeEventListener("resize", container._carouselResizeHandler);
-  }
-  container._carouselResizeHandler = () => {
-    setTimeout(updateActiveCard, 100);
-  };
-  window.addEventListener("resize", container._carouselResizeHandler);
-}
-
-/* =======================
-   Stack Tinder Mobile Swipe — VERSION ARREGLADA Y SMOOTH
-=======================*/
-function activateMobileSwipe() {
-  const container = document.getElementById("week-carousel");
-  let cards = Array.from(container.querySelectorAll(".day-card"));
-  if (!cards.length) return;
-
-  // Reset visual base
-  cards.forEach((card) => {
-    card.classList.remove("stack-top", "stack-2", "stack-3");
-    card.style.transform = "";
-    card.style.opacity = "";
-    card.style.pointerEvents = "";
-    card.style.transition = "";
-  });
-
-  /* -----------------------------
-     Nueva versión de applyStackClasses()
-  ------------------------------*/
-  function applyStackClasses() {
-    cards = Array.from(container.querySelectorAll(".day-card"));
-
-    cards.forEach((card, i) => {
-      card.classList.remove("stack-top", "stack-2", "stack-3");
-
-      if (i === 0) {
-        card.classList.add("stack-top");
-        card.style.pointerEvents = "auto";  // SOLO la top recibe interacción
-      } else if (i === 1) {
-        card.classList.add("stack-2");
-        card.style.pointerEvents = "none";
-      } else if (i === 2) {
-        card.classList.add("stack-3");
-        card.style.pointerEvents = "none";
-      } else {
-        card.style.pointerEvents = "none";  // Todas las de atrás desactivadas
-      }
-    });
-  }
-
-  applyStackClasses();
-
-  let startX = 0;
-  let currentX = 0;
-  let dragging = false;
-  let activeCard = null;
-
-  /* -------------------------------------
-     DETECTAR SI EL USUARIO TOCA LA TOP CARD
-  --------------------------------------*/
-  function onPointerDown(e) {
-    if (dragging) return;
-
-    const top = cards[0];
-    if (!top) return;
-
-    // Aceptamos el toque si viene desde cualquier hijo de .stack-top
-    if (!e.target.closest(".stack-top")) return;
-
-    activeCard = top;
-    dragging = true;
-
-    const point = e.touches ? e.touches[0] : e;
-    startX = point.clientX;
-    currentX = 0;
-
-    activeCard.style.transition = "none";
-  }
-
-  /* -------------------------------------
-     ARRASTRAR
-  --------------------------------------*/
-  function onPointerMove(e) {
-    if (!dragging || !activeCard) return;
-
-    const point = e.touches ? e.touches[0] : e;
-    currentX = point.clientX - startX;
-    const rotate = currentX * 0.065; // más natural
-
-    activeCard.style.transform = `translateX(${currentX}px) rotate(${rotate}deg)`;
-  }
-
-  /* -------------------------------------
-     SOLTAR — CON ANIMACIÓN TINDER
-  --------------------------------------*/
-  function onPointerUp() {
-    if (!dragging || !activeCard) return;
-
-    const threshold = 110;  // distancia para descartar
-
-    // Si se desliza lo suficiente → fuera
-    if (Math.abs(currentX) > threshold) {
-      const direction = currentX > 0 ? 1 : -1;
-
-      activeCard.style.transition =
-        "transform 0.33s cubic-bezier(.32,1.7,.52,1), opacity 0.25s";
-      activeCard.style.transform = `translateX(${
-        direction * 620
-      }px) rotate(${direction * 25}deg)`;
-      activeCard.style.opacity = "0";
-
-      const cardToRemove = activeCard;
-
-      setTimeout(() => {
-        cardToRemove.remove();
-        cards = Array.from(container.querySelectorAll(".day-card"));
-        applyStackClasses();
-      }, 280);
-    } else {
-      // Volver al centro si no pasó el threshold
-      activeCard.style.transition =
-        "transform 0.25s cubic-bezier(.32,1.4,.52,1)";
-      activeCard.style.transform = "translateX(0) rotate(0deg)";
-    }
-
-    dragging = false;
-    activeCard = null;
-    currentX = 0;
-  }
-
-  /* -------------------------------------
-     LIMPIAR HANDLERS PREVIOS
-  --------------------------------------*/
-  if (container._mobileSwipeCleanup) {
-    container._mobileSwipeCleanup();
-  }
-
-  const target = container;
-
-  target.addEventListener("pointerdown", onPointerDown);
-  target.addEventListener("pointermove", onPointerMove);
-  target.addEventListener("pointerup", onPointerUp);
-  target.addEventListener("pointercancel", onPointerUp);
-
-  target.addEventListener("touchstart", onPointerDown, { passive: true });
-  target.addEventListener("touchmove", onPointerMove, { passive: true });
-  target.addEventListener("touchend", onPointerUp);
-  target.addEventListener("touchcancel", onPointerUp);
-
-  container._mobileSwipeCleanup = () => {
-    target.removeEventListener("pointerdown", onPointerDown);
-    target.removeEventListener("pointermove", onPointerMove);
-    target.removeEventListener("pointerup", onPointerUp);
-    target.removeEventListener("pointercancel", onPointerUp);
-
-    target.removeEventListener("touchstart", onPointerDown);
-    target.removeEventListener("touchmove", onPointerMove);
-    target.removeEventListener("touchend", onPointerUp);
-    target.removeEventListener("touchcancel", onPointerUp);
-  };
+  goTo(0);
 }
 
 /* ======================================
-   PROGRESS BAR
+   PROGRESS
 =======================================*/
 function updateProgress(total, completed) {
   const pct = total === 0 ? 0 : Math.round((completed / total) * 100);

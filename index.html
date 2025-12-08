@@ -2,12 +2,11 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
-  <title>Plan Running + Fuerza + Retos</title>
+  <title>Plan Running + Fuerza + Acción</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <!-- TIPOGRAFÍA GLOBAL -->
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css" />
 </head>
 
@@ -19,7 +18,6 @@
       <div class="top-row">
         <h1>Plan Running + Fuerza + Acción</h1>
 
-        <!-- Modo oscuro / claro -->
         <button id="theme-toggle" class="theme-toggle">
           🌓
         </button>
@@ -29,26 +27,31 @@
         Marca los bloques diarios. Todo se guarda automáticamente.
       </p>
 
-      <!-- Progress card -->
       <div class="progress-card">
         <div class="progress-label">
           Progreso semanal:
           <strong><span id="progress-text">0 / 14 bloques</span></strong>
         </div>
-        <div id="rewards" class="rewards-box">
-        </div>
+
+        <div id="rewards" class="rewards-box"></div>
+
         <div class="progress-bar">
           <div class="progress-bar-fill" id="progress-bar-fill"></div>
         </div>
+
         <p id="real-life-tip" class="real-life-tip"></p>
+
         <button id="new-week" class="new-week">Nueva semana</button>
       </div>
     </header>
 
-    <!-- WEEK GRID -->
+    <!-- WEEK SLIDER -->
     <main>
+      <button id="prev-btn" class="nav-btn">←</button>
       <section id="week-carousel" class="carousel-container"></section>
+      <button id="next-btn" class="nav-btn">→</button>
     </main>
+
   </div>
 
   <script type="module" src="app.js"></script>
