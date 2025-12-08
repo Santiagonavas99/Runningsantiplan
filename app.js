@@ -268,7 +268,7 @@ function activateDesktopCarousel() {
 }
 
 /* =======================
-   Stack Tinder Mobile Swipe
+   Stack Tinder Mobile Swipe — VERSION ARREGLADA Y SMOOTH
 =======================*/
 function activateMobileSwipe() {
   const container = document.getElementById("week-carousel");
@@ -284,15 +284,28 @@ function activateMobileSwipe() {
     card.style.transition = "";
   });
 
+  /* -----------------------------
+     Nueva versión de applyStackClasses()
+  ------------------------------*/
   function applyStackClasses() {
     cards = Array.from(container.querySelectorAll(".day-card"));
-    cards.forEach((card) => {
-      card.classList.remove("stack-top", "stack-2", "stack-3");
-    });
 
-    if (cards[0]) cards[0].classList.add("stack-top");
-    if (cards[1]) cards[1].classList.add("stack-2");
-    if (cards[2]) cards[2].classList.add("stack-3");
+    cards.forEach((card, i) => {
+      card.classList.remove("stack-top", "stack-2", "stack-3");
+
+      if (i === 0) {
+        card.classList.add("stack-top");
+        card.style.pointerEvents = "auto";  // SOLO la top recibe interacción
+      } else if (i === 1) {
+        card.classList.add("stack-2");
+        card.style.pointerEvents = "none";
+      } else if (i === 2) {
+        card.classList.add("stack-3");
+        card.style.pointerEvents = "none";
+      } else {
+        card.style.pointerEvents = "none";  // Todas las de atrás desactivadas
+      }
+    });
   }
 
   applyStackClasses();
@@ -302,14 +315,17 @@ function activateMobileSwipe() {
   let dragging = false;
   let activeCard = null;
 
+  /* -------------------------------------
+     DETECTAR SI EL USUARIO TOCA LA TOP CARD
+  --------------------------------------*/
   function onPointerDown(e) {
     if (dragging) return;
 
     const top = cards[0];
     if (!top) return;
 
-    const cardTarget = e.target.closest(".day-card");
-    if (!cardTarget || cardTarget !== top) return;
+    // Aceptamos el toque si viene desde cualquier hijo de .stack-top
+    if (!e.target.closest(".stack-top")) return;
 
     activeCard = top;
     dragging = true;
@@ -321,38 +337,49 @@ function activateMobileSwipe() {
     activeCard.style.transition = "none";
   }
 
+  /* -------------------------------------
+     ARRASTRAR
+  --------------------------------------*/
   function onPointerMove(e) {
     if (!dragging || !activeCard) return;
 
     const point = e.touches ? e.touches[0] : e;
     currentX = point.clientX - startX;
-    const rotate = currentX * 0.03;
+    const rotate = currentX * 0.065; // más natural
 
     activeCard.style.transform = `translateX(${currentX}px) rotate(${rotate}deg)`;
   }
 
+  /* -------------------------------------
+     SOLTAR — CON ANIMACIÓN TINDER
+  --------------------------------------*/
   function onPointerUp() {
     if (!dragging || !activeCard) return;
 
-    const threshold = 120;
+    const threshold = 110;  // distancia para descartar
 
+    // Si se desliza lo suficiente → fuera
     if (Math.abs(currentX) > threshold) {
+      const direction = currentX > 0 ? 1 : -1;
+
       activeCard.style.transition =
-        "transform 0.22s cubic-bezier(.4,1.6,.6,1), opacity 0.18s";
+        "transform 0.33s cubic-bezier(.32,1.7,.52,1), opacity 0.25s";
       activeCard.style.transform = `translateX(${
-        currentX > 0 ? 600 : -600
-      }px) rotate(${currentX * 0.06}deg)`;
+        direction * 620
+      }px) rotate(${direction * 25}deg)`;
       activeCard.style.opacity = "0";
 
       const cardToRemove = activeCard;
+
       setTimeout(() => {
         cardToRemove.remove();
         cards = Array.from(container.querySelectorAll(".day-card"));
         applyStackClasses();
-      }, 220);
+      }, 280);
     } else {
+      // Volver al centro si no pasó el threshold
       activeCard.style.transition =
-        "transform 0.18s cubic-bezier(.4,1.6,.6,1)";
+        "transform 0.25s cubic-bezier(.32,1.4,.52,1)";
       activeCard.style.transform = "translateX(0) rotate(0deg)";
     }
 
@@ -361,32 +388,35 @@ function activateMobileSwipe() {
     currentX = 0;
   }
 
+  /* -------------------------------------
+     LIMPIAR HANDLERS PREVIOS
+  --------------------------------------*/
   if (container._mobileSwipeCleanup) {
     container._mobileSwipeCleanup();
   }
 
-  const eventsTarget = container;
+  const target = container;
 
-  eventsTarget.addEventListener("pointerdown", onPointerDown);
-  eventsTarget.addEventListener("pointermove", onPointerMove);
-  eventsTarget.addEventListener("pointerup", onPointerUp);
-  eventsTarget.addEventListener("pointercancel", onPointerUp);
+  target.addEventListener("pointerdown", onPointerDown);
+  target.addEventListener("pointermove", onPointerMove);
+  target.addEventListener("pointerup", onPointerUp);
+  target.addEventListener("pointercancel", onPointerUp);
 
-  eventsTarget.addEventListener("touchstart", onPointerDown, { passive: true });
-  eventsTarget.addEventListener("touchmove", onPointerMove, { passive: true });
-  eventsTarget.addEventListener("touchend", onPointerUp);
-  eventsTarget.addEventListener("touchcancel", onPointerUp);
+  target.addEventListener("touchstart", onPointerDown, { passive: true });
+  target.addEventListener("touchmove", onPointerMove, { passive: true });
+  target.addEventListener("touchend", onPointerUp);
+  target.addEventListener("touchcancel", onPointerUp);
 
   container._mobileSwipeCleanup = () => {
-    eventsTarget.removeEventListener("pointerdown", onPointerDown);
-    eventsTarget.removeEventListener("pointermove", onPointerMove);
-    eventsTarget.removeEventListener("pointerup", onPointerUp);
-    eventsTarget.removeEventListener("pointercancel", onPointerUp);
+    target.removeEventListener("pointerdown", onPointerDown);
+    target.removeEventListener("pointermove", onPointerMove);
+    target.removeEventListener("pointerup", onPointerUp);
+    target.removeEventListener("pointercancel", onPointerUp);
 
-    eventsTarget.removeEventListener("touchstart", onPointerDown);
-    eventsTarget.removeEventListener("touchmove", onPointerMove);
-    eventsTarget.removeEventListener("touchend", onPointerUp);
-    eventsTarget.removeEventListener("touchcancel", onPointerUp);
+    target.removeEventListener("touchstart", onPointerDown);
+    target.removeEventListener("touchmove", onPointerMove);
+    target.removeEventListener("touchend", onPointerUp);
+    target.removeEventListener("touchcancel", onPointerUp);
   };
 }
 
